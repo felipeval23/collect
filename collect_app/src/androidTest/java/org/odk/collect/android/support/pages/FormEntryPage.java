@@ -240,4 +240,9 @@ public class FormEntryPage extends Page<FormEntryPage> {
         onView(withText(R.string.quit_entry)).check(matches(isDisplayed()));
         return this;
     }
+
+    public AddNewRepeatDialog clickPlus(String repeatName) {
+        onView(withId(R.id.menu_add_repeat)).perform(click());
+        return new AddNewRepeatDialog(repeatName, rule);
+    }
 }
