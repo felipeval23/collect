@@ -245,4 +245,9 @@ public class FormEntryPage extends Page<FormEntryPage> {
         onView(withId(R.id.menu_add_repeat)).perform(click());
         return new AddNewRepeatDialog(repeatName, rule);
     }
+
+    public AddNewRepeatDialog swipeToNextQuestionWithRepeatGroup(String repeatName) {
+        onView(withId(R.id.questionholder)).perform(swipeLeft());
+        return new AddNewRepeatDialog(repeatName, rule);
+    }
 }
