@@ -23,7 +23,7 @@ public class SaveFormProgressDialogFragment extends ProgressDialogFragment {
     @Override
     protected Cancellable getCancellable() {
         return ViewModelProviders
-                .of(getActivity(), new FormSaveViewModel.Factory())
+                .of(getActivity())
                 .get(FormSaveViewModel.class);
     }
 }
