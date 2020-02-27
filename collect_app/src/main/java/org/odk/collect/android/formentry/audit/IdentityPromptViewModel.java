@@ -32,7 +32,7 @@ public class IdentityPromptViewModel extends ViewModel {
         return identity;
     }
 
-    public void setAuditEventLogger(AuditEventLogger auditEventLogger) {
+    public void formLoaded(AuditEventLogger auditEventLogger) {
         this.auditEventLogger = auditEventLogger;
         updateRequiresIdentity();
     }
