@@ -1180,6 +1180,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
      * @return newly created View
      */
     private View createView(int event, boolean advancingPage) {
+        invalidateOptionsMenu();
         releaseOdkView();
 
         FormController formController = getFormController();
