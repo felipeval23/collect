@@ -97,7 +97,7 @@ import org.odk.collect.android.formentry.FormIndexAnimationHandler;
 import org.odk.collect.android.formentry.FormLoadingDialogFragment;
 import org.odk.collect.android.formentry.ODKView;
 import org.odk.collect.android.formentry.QuitFormDialog;
-import org.odk.collect.android.formentry.SaveFormProgressDialogFragment;
+import org.odk.collect.android.formentry.saving.SaveFormProgressDialogFragment;
 import org.odk.collect.android.formentry.audit.AuditEvent;
 import org.odk.collect.android.formentry.audit.AuditUtils;
 import org.odk.collect.android.formentry.audit.ChangesReasonPromptDialogFragment;
@@ -1008,26 +1008,25 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        optionsMenuDelegate.onCreate(getMenuInflater(), menu);
+        optionsMenuDelegate.onCreateOptionsMenu(getMenuInflater(), menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        optionsMenuDelegate.onPrepare(menu);
+        optionsMenuDelegate.onPrepareOptionsMenu(menu);
 
         if (getFormController() != null && getFormController().currentFormCollectsBackgroundLocation()
                 && PlayServicesUtil.isGooglePlayServicesAvailable(this)) {
             analytics.logEvent(LAUNCH_FORM_WITH_BG_LOCATION, getFormController().getCurrentFormIdentifierHash());
         }
-
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (optionsMenuDelegate.onItemSelected(item)) {
+        if (optionsMenuDelegate.onOptionsItemSelected(item)) {
             return true;
         }
 

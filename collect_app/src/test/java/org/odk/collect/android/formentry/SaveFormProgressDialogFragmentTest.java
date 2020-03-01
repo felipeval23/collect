@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.odk.collect.android.formentry.saving.SaveFormProgressDialogFragment;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
