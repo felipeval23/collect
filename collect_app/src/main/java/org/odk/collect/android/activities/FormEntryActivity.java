@@ -438,9 +438,10 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
                 .of(this, new FormEntryViewModel.Factory(analytics))
                 .get(FormEntryViewModel.class);
 
-        formEntryViewModel.getUpdates().observe(this, index -> {
-            if (index != null) {
-                refreshCurrentView();
+        formEntryViewModel.getError().observe(this, error -> {
+            if (error != null) {
+                createErrorDialog(error, DO_NOT_EXIT);
+                formEntryViewModel.errorDisplayed();
             }
         });
 
