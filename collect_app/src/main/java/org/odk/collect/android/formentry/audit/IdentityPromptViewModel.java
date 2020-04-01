@@ -5,18 +5,28 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import org.odk.collect.android.formentry.RequiresFormController;
+import org.odk.collect.android.javarosawrapper.FormController;
+
 import static org.odk.collect.android.utilities.StringUtils.isBlank;
 
-public class IdentityPromptViewModel extends ViewModel {
+public class IdentityPromptViewModel extends ViewModel implements RequiresFormController {
 
     private final MutableLiveData<Boolean> formEntryCancelled = new MutableLiveData<>(false);
     private final MutableLiveData<Boolean> requiresIdentity = new MutableLiveData<>(false);
 
     @Nullable
     private AuditEventLogger auditEventLogger;
+
     private String identity = "";
 
     public IdentityPromptViewModel() {
+        updateRequiresIdentity();
+    }
+
+    @Override
+    public void formLoaded(FormController formController) {
+        this.auditEventLogger = formController.getAuditEventLogger();
         updateRequiresIdentity();
     }
 
@@ -30,11 +40,6 @@ public class IdentityPromptViewModel extends ViewModel {
 
     public String getUser() {
         return identity;
-    }
-
-    public void formLoaded(AuditEventLogger auditEventLogger) {
-        this.auditEventLogger = auditEventLogger;
-        updateRequiresIdentity();
     }
 
     public void setIdentity(String identity) {

@@ -142,7 +142,6 @@ import org.odk.collect.android.utilities.FormNameUtils;
 import org.odk.collect.android.utilities.ImageConverter;
 import org.odk.collect.android.utilities.MediaManager;
 import org.odk.collect.android.utilities.MediaUtils;
-import org.odk.collect.android.utilities.MenuDelegate;
 import org.odk.collect.android.utilities.PermissionUtils;
 import org.odk.collect.android.utilities.PlayServicesUtil;
 import org.odk.collect.android.utilities.ScreenContext;
@@ -289,7 +288,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     MediaLoadingFragment mediaLoadingFragment;
-    private MenuDelegate menuDelegate;
+    private FormEntryMenuDelegate menuDelegate;
     private FormIndexAnimationHandler formIndexAnimationHandler;
 
     @Override
@@ -359,7 +358,6 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
         formIndexAnimationHandler = new FormIndexAnimationHandler(this);
         menuDelegate = new FormEntryMenuDelegate(
                 this,
-                this::getFormController,
                 () -> getCurrentViewIfODKView().getAnswers(),
                 formIndexAnimationHandler
         );
@@ -429,6 +427,7 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
                 DialogUtils.showIfNotShowing(dialog, getSupportFragmentManager());
             }
         });
+
         identityPromptViewModel.isFormEntryCancelled().observe(this, isFormEntryCancelled -> {
             if (isFormEntryCancelled) {
                 finish();
@@ -454,7 +453,8 @@ public class FormEntryActivity extends CollectAbstractActivity implements Animat
     }
 
     private void formControllerAvailable(FormController formController) {
-        identityPromptViewModel.formLoaded(formController.getAuditEventLogger());
+        menuDelegate.formLoaded(formController);
+        identityPromptViewModel.formLoaded(formController);
         formEntryViewModel.formLoaded(formController);
         formSaveViewModel.formLoaded(formController);
     }
