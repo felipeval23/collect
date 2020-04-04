@@ -35,6 +35,10 @@ public class FormLoadingDialogFragment extends ProgressDialogFragment {
     @Deprecated
     private FormLoadingDialogFragmentListener listener;
 
+    public static FormLoadingDialogFragment newInstance() {
+        return new FormLoadingDialogFragment();
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

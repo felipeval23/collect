@@ -142,9 +142,9 @@ public class AppDependencyModule {
 
     @Provides
     @Singleton
-    public Analytics providesAnalytics(Application application, GeneralSharedPreferences generalSharedPreferences) {
+    public Analytics providesAnalytics(Application application) {
         com.google.firebase.analytics.FirebaseAnalytics firebaseAnalyticsInstance = com.google.firebase.analytics.FirebaseAnalytics.getInstance(application);
-        return new FirebaseAnalytics(firebaseAnalyticsInstance, generalSharedPreferences);
+        return new FirebaseAnalytics(firebaseAnalyticsInstance);
     }
 
     @Provides

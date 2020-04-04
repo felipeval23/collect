@@ -46,6 +46,7 @@
                 android:paddingLeft="7dip"
                 android:paddingRight="7dip"
                 android:paddingStart="7dip"
+                android:fontFamily="@font/roboto_black"
                 android:text="@string/app_name"
                 android:textSize="22sp"
                 android:textStyle="bold" />
@@ -58,6 +59,7 @@
                 android:paddingLeft="7dip"
                 android:paddingRight="7dip"
                 android:paddingStart="7dip"
+                android:fontFamily="@font/roboto_regular"
                 android:text="@string/app_url"
                 android:textSize="14sp" />
         </LinearLayout>

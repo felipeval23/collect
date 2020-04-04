@@ -17,7 +17,19 @@ import org.odk.collect.android.material.MaterialFullScreenDialogFragment;
 
 public class IdentifyUserPromptDialogFragment extends MaterialFullScreenDialogFragment {
 
+    private static final String ARG_FORM_NAME = "ArgFormName";
+
     private IdentityPromptViewModel viewModel;
+
+    public static IdentifyUserPromptDialogFragment create(String formName) {
+        IdentifyUserPromptDialogFragment dialog = new IdentifyUserPromptDialogFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putString(IdentifyUserPromptDialogFragment.ARG_FORM_NAME, formName);
+        dialog.setArguments(bundle);
+
+        return dialog;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -28,7 +40,7 @@ public class IdentifyUserPromptDialogFragment extends MaterialFullScreenDialogFr
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        getToolbar().setTitle(viewModel.getFormTitle());
+        getToolbar().setTitle(getArguments().getString(ARG_FORM_NAME));
 
         EditText identityField = view.findViewById(R.id.identity);
         identityField.setText(viewModel.getUser());

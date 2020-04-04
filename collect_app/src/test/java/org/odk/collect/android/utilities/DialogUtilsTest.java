@@ -3,7 +3,6 @@ package org.odk.collect.android.utilities;
 import android.os.Bundle;
 
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
@@ -25,11 +24,12 @@ public class DialogUtilsTest {
         FragmentActivity activity = createThemedActivity(FragmentActivity.class);
         FragmentManager fragmentManager = activity.getSupportFragmentManager();
 
-        DialogUtils.showIfNotShowing(DialogFragment.class, fragmentManager);
-        assertThat(fragmentManager.getFragments().size(), equalTo(1));
-        Fragment dialog1 = fragmentManager.getFragments().get(0);
+        DialogFragment dialog1 = new DialogFragment();
+        DialogUtils.showIfNotShowing(dialog1, fragmentManager);
 
-        DialogUtils.showIfNotShowing(DialogFragment.class, fragmentManager);
+        DialogFragment dialog2 = new DialogFragment();
+        DialogUtils.showIfNotShowing(dialog2, fragmentManager);
+
         assertThat(fragmentManager.getFragments().size(), equalTo(1));
         assertThat(fragmentManager.getFragments().get(0), equalTo(dialog1));
     }
@@ -40,7 +40,7 @@ public class DialogUtilsTest {
         activityController.pause().stop().saveInstanceState(new Bundle());
 
         FragmentManager fragmentManager = activityController.get().getSupportFragmentManager();
-        DialogUtils.showIfNotShowing(DialogFragment.class, fragmentManager);
+        DialogUtils.showIfNotShowing(new DialogFragment(), fragmentManager);
         assertThat(fragmentManager.getFragments().size(), equalTo(0));
     }
 
@@ -50,7 +50,7 @@ public class DialogUtilsTest {
         activityController.pause().stop().destroy();
 
         FragmentManager fragmentManager = activityController.get().getSupportFragmentManager();
-        DialogUtils.showIfNotShowing(DialogFragment.class, fragmentManager);
+        DialogUtils.showIfNotShowing(new DialogFragment(), fragmentManager);
         assertThat(fragmentManager.getFragments().size(), equalTo(0));
     }
 }

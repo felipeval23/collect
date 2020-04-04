@@ -17,7 +17,6 @@ package org.odk.collect.android.tasks;
 import android.database.Cursor;
 
 import org.odk.collect.android.R;
-import org.odk.collect.android.analytics.Analytics;
 import org.odk.collect.android.application.Collect;
 import org.odk.collect.android.dao.FormsDao;
 import org.odk.collect.android.forms.Form;
@@ -37,11 +36,9 @@ import static org.odk.collect.android.utilities.InstanceUploaderUtils.SPREADSHEE
 
 public class InstanceGoogleSheetsUploaderTask extends InstanceUploaderTask {
     private final GoogleAccountsManager accountsManager;
-    private final Analytics analytics;
 
-    public InstanceGoogleSheetsUploaderTask(GoogleAccountsManager accountsManager, Analytics analytics) {
+    public InstanceGoogleSheetsUploaderTask(GoogleAccountsManager accountsManager) {
         this.accountsManager = accountsManager;
-        this.analytics = analytics;
     }
 
     @Override
@@ -77,7 +74,7 @@ public class InstanceGoogleSheetsUploaderTask extends InstanceUploaderTask {
                         uploader.uploadOneSubmission(instance, destinationUrl);
                         outcome.messagesByInstanceId.put(instance.getDatabaseId().toString(), DEFAULT_SUCCESSFUL_TEXT);
 
-                        analytics.logEvent(SUBMISSION, "HTTP-Sheets", Collect.getFormIdentifierHash(instance.getJrFormId(), instance.getJrVersion()));
+                        Collect.getInstance().logRemoteAnalytics(SUBMISSION, "HTTP-Sheets", Collect.getFormIdentifierHash(instance.getJrFormId(), instance.getJrVersion()));
                     } else {
                         outcome.messagesByInstanceId.put(instance.getDatabaseId().toString(), SPREADSHEET_UPLOADED_TO_GOOGLE_DRIVE);
                     }

@@ -7,7 +7,7 @@ OR CONDITIONS OF ANY KIND, either express or implied. See the License for
 the specific language governing permissions and limitations under the License. -->
 <resources>
     <!-- strings that should not be translated -->
-    <string name="app_name" translatable="false">ODK Collect</string>
+    <string name="app_name" translatable="false">HEDERA Collect</string>
     <string name="protocol_odk_default" translatable="false">odk_default</string>
     <string name="protocol_google_sheets" translatable="false">google_sheets</string>
     <string name="protocol_other" translatable="false">other_protocol</string>
@@ -17,7 +17,7 @@ the specific language governing permissions and limitations under the License. -
     <string name="transport_type_value_internet" translatable="false">internet</string>
     <string name="transport_type_value_sms" translatable="false">sms</string>
     <string name="transport_type_value_both" translatable="false">both</string>
-    <string name="app_url" translatable="false">http://opendatakit.org</string>
+    <string name="app_url" translatable="false">www.hedera.online</string>
     <string name="never_value" translatable="false">never</string>
     <string name="every_fifteen_minutes_value" translatable="false">every_fifteen_minutes</string>
     <string name="every_one_hour_value" translatable="false">every_one_hour</string>

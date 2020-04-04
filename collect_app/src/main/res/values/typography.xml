@@ -2,6 +2,7 @@
 <resources>
     <style name="TextAppearance.Collect.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
         <item name="android:textColor">@color/color_on_surface_high_emphasis</item>
+        <item name="android:fontFamily">@font/tw_cent</item>
     </style>
 
     <style name="TextAppearance.Collect.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">

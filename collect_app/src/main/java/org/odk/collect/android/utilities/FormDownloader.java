@@ -173,12 +173,8 @@ public class FormDownloader {
             fileResult = null;
         }
 
-        if (fileResult == null) {
-            return message + "Downloading Xform failed.";
-        }
-
         Map<String, String> parsedFields = null;
-        if (fileResult.isNew) {
+        if (fileResult != null) {
             try {
                 final long start = System.currentTimeMillis();
                 Timber.w("Parsing document %s", fileResult.file.getAbsolutePath());
@@ -204,8 +200,8 @@ public class FormDownloader {
 
         boolean installed = false;
 
-        if ((stateListener == null || !stateListener.isTaskCanceled()) && message.isEmpty()) {
-            if (!fileResult.isNew || isSubmissionOk(parsedFields)) {
+        if ((stateListener == null || !stateListener.isTaskCanceled()) && message.isEmpty() && parsedFields != null) {
+            if (isSubmissionOk(parsedFields)) {
                 installed = installEverything(tempMediaPath, fileResult, parsedFields);
             } else {
                 message += Collect.getInstance().getString(R.string.xform_parse_error,
@@ -345,7 +341,8 @@ public class FormDownloader {
      * Takes the formName and the URL and attempts to download the specified file. Returns a file
      * object representing the downloaded file.
      */
-    FileResult downloadXform(String formName, String url) throws Exception {
+    FileResult downloadXform(String formName, String url)
+            throws IOException, TaskCancelledException, Exception {
         // clean up friendly form name...
         String rootName = FormNameUtils.formatFilenameFromFormName(formName);
 

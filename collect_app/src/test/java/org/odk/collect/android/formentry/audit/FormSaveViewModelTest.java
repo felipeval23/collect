@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
-import org.odk.collect.android.analytics.Analytics;
 import org.odk.collect.android.formentry.saving.FormSaveViewModel;
 import org.odk.collect.android.formentry.saving.FormSaver;
 import org.odk.collect.android.logic.FormController;
@@ -58,19 +57,18 @@ public class FormSaveViewModelTest {
         formController = mock(FormController.class);
         logger = mock(AuditEventLogger.class);
         formSaver = mock(FormSaver.class);
-        Analytics analytics = mock(Analytics.class);
 
         when(formController.getAuditEventLogger()).thenReturn(logger);
         when(logger.isChangeReasonRequired()).thenReturn(false);
 
-        viewModel = new FormSaveViewModel(() -> CURRENT_TIME, formSaver, analytics);
+        viewModel = new FormSaveViewModel(() -> CURRENT_TIME, formSaver);
         viewModel.setFormController(formController);
     }
 
     @Test
     public void saveForm_returnsSaveResult_inSavingState() {
         viewModel.saveForm(Uri.parse("file://form"), true, "", false);
-        FormSaveViewModel.SaveResult saveResult1 = viewModel.getSaveResult().getValue();
+        FormSaveViewModel.SaveResult saveResult1 = viewModel.getSavedResult().getValue();
         assertThat(saveResult1.getState(), equalTo(SAVING));
     }
 
@@ -80,17 +78,17 @@ public class FormSaveViewModelTest {
         viewModel.saveForm(Uri.parse("file://form"), true, "", false);
 
         whenFormSaverFinishes(SaveFormToDisk.SAVED);
-        verify(formSaver).save(any(), any(), anyBoolean(), anyBoolean(), any(), any(), any());
+        verify(formSaver).save(any(), any(), anyBoolean(), anyBoolean(), any(), any());
 
         Robolectric.getBackgroundThreadScheduler().advanceToLastPostedRunnable(); // Run any other queued tasks
-        verify(formSaver, times(1)).save(any(), any(), anyBoolean(), anyBoolean(), any(), any(), any());
+        verify(formSaver, times(1)).save(any(), any(), anyBoolean(), anyBoolean(), any(), any());
     }
 
     @Test
     public void saveForm_whenReasonRequiredToSave_returnsSaveResult_inChangeReasonRequiredState() {
         whenReasonRequiredToSave();
 
-        LiveData<FormSaveViewModel.SaveResult> saveResult = viewModel.getSaveResult();
+        LiveData<FormSaveViewModel.SaveResult> saveResult = viewModel.getSavedResult();
         viewModel.saveForm(Uri.parse("file://form"), true, "", false);
         assertThat(saveResult.getValue().getState(), equalTo(CHANGE_REASON_REQUIRED));
     }
@@ -98,7 +96,7 @@ public class FormSaveViewModelTest {
     @Test
     public void whenFormSaverFinishes_saved_setsSaveResultState_toSaved() {
         viewModel.saveForm(Uri.parse("file://form"), true, "", false);
-        LiveData<FormSaveViewModel.SaveResult> saveResult = viewModel.getSaveResult();
+        LiveData<FormSaveViewModel.SaveResult> saveResult = viewModel.getSavedResult();
 
         whenFormSaverFinishes(SaveFormToDisk.SAVED);
         assertThat(saveResult.getValue().getState(), equalTo(SAVED));
@@ -227,7 +225,7 @@ public class FormSaveViewModelTest {
     @Test
     public void whenFormSaverFinishes_savedAndExit_setsSaveResultState_toSaved() {
         viewModel.saveForm(Uri.parse("file://form"), false, "", false);
-        LiveData<FormSaveViewModel.SaveResult> saveResult = viewModel.getSaveResult();
+        LiveData<FormSaveViewModel.SaveResult> saveResult = viewModel.getSavedResult();
 
         whenFormSaverFinishes(SaveFormToDisk.SAVED_AND_EXIT);
         assertThat(saveResult.getValue().getState(), equalTo(SAVED));
@@ -236,7 +234,7 @@ public class FormSaveViewModelTest {
     @Test
     public void whenFormSaverFinishes_saveError_setSaveResultState_toSaveErrorWithMessage() {
         viewModel.saveForm(Uri.parse("file://form"), false, "", false);
-        LiveData<FormSaveViewModel.SaveResult> saveResult = viewModel.getSaveResult();
+        LiveData<FormSaveViewModel.SaveResult> saveResult = viewModel.getSavedResult();
 
         whenFormSaverFinishes(SaveFormToDisk.SAVE_ERROR, "OH NO");
         assertThat(saveResult.getValue().getState(), equalTo(SAVE_ERROR));
@@ -257,7 +255,7 @@ public class FormSaveViewModelTest {
     @Test
     public void whenFormSaverFinishes_encryptionError_setSaveResultState_toFinalizeErrorWithMessage() {
         viewModel.saveForm(Uri.parse("file://form"), false, "", false);
-        LiveData<FormSaveViewModel.SaveResult> saveResult = viewModel.getSaveResult();
+        LiveData<FormSaveViewModel.SaveResult> saveResult = viewModel.getSavedResult();
 
         whenFormSaverFinishes(SaveFormToDisk.ENCRYPTION_ERROR, "OH NO");
         assertThat(saveResult.getValue().getState(), equalTo(FINALIZE_ERROR));
@@ -278,7 +276,7 @@ public class FormSaveViewModelTest {
     @Test
     public void whenFormSaverFinishes_answerConstraintViolated_setSaveResultState_toConstraintError() {
         viewModel.saveForm(Uri.parse("file://form"), false, "", false);
-        LiveData<FormSaveViewModel.SaveResult> saveResult = viewModel.getSaveResult();
+        LiveData<FormSaveViewModel.SaveResult> saveResult = viewModel.getSavedResult();
 
         whenFormSaverFinishes(FormEntryController.ANSWER_CONSTRAINT_VIOLATED);
         assertThat(saveResult.getValue().getState(), equalTo(CONSTRAINT_ERROR));
@@ -298,7 +296,7 @@ public class FormSaveViewModelTest {
     @Test
     public void whenFormSaverFinishes_answerRequiredButEmpty_setSaveResultState_toConstraintError() {
         viewModel.saveForm(Uri.parse("file://form"), false, "", false);
-        LiveData<FormSaveViewModel.SaveResult> saveResult = viewModel.getSaveResult();
+        LiveData<FormSaveViewModel.SaveResult> saveResult = viewModel.getSavedResult();
 
         whenFormSaverFinishes(FormEntryController.ANSWER_REQUIRED_BUT_EMPTY);
         assertThat(saveResult.getValue().getState(), equalTo(CONSTRAINT_ERROR));
@@ -319,7 +317,7 @@ public class FormSaveViewModelTest {
     public void whenReasonRequiredToSave_saveReason_setsSaveResultState_toSaving() {
         whenReasonRequiredToSave();
         viewModel.saveForm(Uri.parse("file://form"), false, "", false);
-        LiveData<FormSaveViewModel.SaveResult> saveResult = viewModel.getSaveResult();
+        LiveData<FormSaveViewModel.SaveResult> saveResult = viewModel.getSavedResult();
 
         viewModel.setReason("blah");
         viewModel.saveReason();
@@ -351,7 +349,7 @@ public class FormSaveViewModelTest {
 
     @Test
     public void resumeFormEntry_clearsSaveResult() {
-        LiveData<FormSaveViewModel.SaveResult> saveResult = viewModel.getSaveResult();
+        LiveData<FormSaveViewModel.SaveResult> saveResult = viewModel.getSavedResult();
         viewModel.saveForm(Uri.parse("file://form"), true, "", false);
         viewModel.resumeFormEntry();
         assertThat(saveResult.getValue(), equalTo(null));
@@ -372,7 +370,7 @@ public class FormSaveViewModelTest {
         saveToDiskResult.setSaveResult(result, true);
         saveToDiskResult.setSaveErrorMessage(message);
 
-        when(formSaver.save(any(), any(), anyBoolean(), anyBoolean(), any(), any(), any())).thenReturn(saveToDiskResult);
+        when(formSaver.save(any(), any(), anyBoolean(), anyBoolean(), any(), any())).thenReturn(saveToDiskResult);
         Robolectric.getBackgroundThreadScheduler().runOneTask();
     }
 }

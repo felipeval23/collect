@@ -65,6 +65,8 @@
     <string name="do_not_save">Ignore Changes</string>
     <string name="enter_data">Fill Blank Form</string>
     <string name="enter_data_button">Fill Blank Form</string>
+    <string name="enter_survey">Survey</string>
+    <string name="enter_tutorial">Virtual Asisstant</string>
     <string name="error_occured">Error Occurred</string>
     <string name="error_attaching_binary_file">An error occurred while attaching the media: %s</string>
     <string name="fetching_file">Getting %1$s.\n\nForm %2$s of %3$s form(s).</string>
@@ -107,6 +109,10 @@
     <string name="play_video">Play Video</string>
     <string name="please_wait">Please wait a few moments.</string>
     <string name="please_wait_long">Please wait. This could take a few minutes.</string>
+    <string name="question1">1. How to install the app</string>
+    <string name="question2">2. How to fill a survey</string>
+    <string name="question3">3. How to select a survey</string>
+    <string name="question4">4. How to cancel a survey</string>
     <string name="quit_application">Exit %s</string>
     <string name="quit_entry">Save Form and Exit</string>
     <string name="refresh">Refresh</string>
@@ -132,6 +138,7 @@
     <string name="server_url">URL</string>
     <string name="server_preferences">Server Settings</string>
     <string name="trigger">OK. Please continue.</string>
+    <string name="tuto">Virtual Assistant</string>
     <string name="uploading_data">Sending Form</string>
     <string name="url_error">Sorry, invalid URL!</string>
     <string name="username">Username</string>

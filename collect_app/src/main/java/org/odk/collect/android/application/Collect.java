@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -29,6 +30,9 @@ import androidx.multidex.MultiDex;
 import com.crashlytics.android.Crashlytics;
 import com.evernote.android.job.JobManager;
 import com.evernote.android.job.JobManagerCreateException;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -44,6 +48,7 @@ import org.odk.collect.android.logic.PropertyManager;
 import org.odk.collect.android.preferences.AdminSharedPreferences;
 import org.odk.collect.android.preferences.AutoSendPreferenceMigrator;
 import org.odk.collect.android.preferences.FormMetadataMigrator;
+import org.odk.collect.android.preferences.GeneralKeys;
 import org.odk.collect.android.preferences.GeneralSharedPreferences;
 import org.odk.collect.android.preferences.PrefMigrator;
 import org.odk.collect.android.storage.StoragePathProvider;
@@ -86,13 +91,15 @@ public class Collect extends Application {
     @Nullable
     private FormController formController;
     private ExternalDataManager externalDataManager;
+    private FirebaseAnalytics firebaseAnalytics;
     private AppDependencyComponent applicationComponent;
 
     @Inject
     UserAgentProvider userAgentProvider;
 
     @Inject
-    public CollectJobCreator collectJobCreator;
+    public
+    CollectJobCreator collectJobCreator;
 
     public static Collect getInstance() {
         return singleton;
@@ -161,6 +168,7 @@ public class Collect extends Application {
     public void onCreate() {
         super.onCreate();
         singleton = this;
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         setupDagger();
 
@@ -198,11 +206,19 @@ public class Collect extends Application {
             Timber.plant(new Timber.DebugTree());
         }
 
+        setupRemoteAnalytics();
+        setupLeakCanary();
         setupOSMDroid();
 
         // Force inclusion of scoped storage strings so they can be translated
         Timber.i("%s %s", getString(R.string.scoped_storage_banner_text),
                                    getString(R.string.scoped_storage_learn_more));
+    }
+
+    private void setupRemoteAnalytics() {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isAnalyticsEnabled = settings.getBoolean(GeneralKeys.KEY_ANALYTICS, true);
+        setAnalyticsCollectionEnabled(isAnalyticsEnabled);
     }
 
     protected void setupOSMDroid() {
@@ -217,6 +233,13 @@ public class Collect extends Application {
         applicationComponent.inject(this);
     }
 
+    protected RefWatcher setupLeakCanary() {
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            return RefWatcher.DISABLED;
+        }
+        return LeakCanary.install(this);
+    }
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -227,6 +250,17 @@ public class Collect extends Application {
         if (!isUsingSysLanguage) {
             new LocaleHelper().updateLocale(this);
         }
+    }
+
+    public void logRemoteAnalytics(String event, String action, String label) {
+        Bundle bundle = new Bundle();
+        bundle.putString("action", action);
+        bundle.putString("label", label);
+        firebaseAnalytics.logEvent(event, bundle);
+    }
+
+    public void setAnalyticsCollectionEnabled(boolean isAnalyticsEnabled) {
+        firebaseAnalytics.setAnalyticsCollectionEnabled(isAnalyticsEnabled);
     }
 
     private static class CrashReportingTree extends Timber.Tree {

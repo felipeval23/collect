@@ -26,11 +26,11 @@ import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import org.odk.collect.android.R;
-import org.odk.collect.android.analytics.Analytics;
 import org.odk.collect.android.application.Collect;
 import org.odk.collect.android.listeners.PermissionListener;
 import org.odk.collect.android.preferences.GeneralKeys;
@@ -46,8 +46,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import javax.inject.Inject;
-
 import timber.log.Timber;
 
 import static org.odk.collect.android.analytics.AnalyticsEvents.SHOW_SPLASH_SCREEN;
@@ -60,15 +58,11 @@ public class SplashScreenActivity extends Activity {
 
     private int imageMaxWidth;
 
-    @Inject
-    Analytics analytics;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // this splash screen should be a blank slate
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        Collect.getInstance().getComponent().inject(this);
 
         new PermissionUtils().requestStoragePermissions(this, new PermissionListener() {
             @Override
@@ -135,7 +129,7 @@ public class SplashScreenActivity extends Activity {
 
             if (showSplash) {
                 String splashPathHash = FileUtils.getMd5Hash(new ByteArrayInputStream(splashPath.getBytes()));
-                analytics.logEvent(SHOW_SPLASH_SCREEN, splashPathHash, "");
+                Collect.getInstance().logRemoteAnalytics(SHOW_SPLASH_SCREEN, splashPathHash, "");
             }
         } else {
             endSplashScreen();
@@ -143,7 +137,11 @@ public class SplashScreenActivity extends Activity {
     }
 
     private void endSplashScreen() {
-        startActivity(new Intent(this, MainMenuActivity.class));
+
+
+
+
+        startActivity(new Intent(this, TestActivity.class));
         finish();
     }
 

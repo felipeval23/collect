@@ -10,14 +10,11 @@ import org.odk.collect.android.application.Collect;
 import javax.inject.Inject;
 
 public class StorageMigrationService extends IntentService {
-
-    public static final String SERVICE_NAME = "StorageMigrationService";
-
     @Inject
     StorageMigrator storageMigrator;
 
     public StorageMigrationService() {
-        super(SERVICE_NAME);
+        super("StorageMigrationService");
         Collect.getInstance().getComponent().inject(this);
     }
 

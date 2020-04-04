@@ -38,7 +38,6 @@ import org.javarosa.form.api.FormEntryController;
 import org.javarosa.form.api.FormEntryPrompt;
 import org.odk.collect.android.R;
 import org.odk.collect.android.adapters.HierarchyListAdapter;
-import org.odk.collect.android.analytics.Analytics;
 import org.odk.collect.android.application.Collect;
 import org.odk.collect.android.exception.JavaRosaException;
 import org.odk.collect.android.formentry.ODKView;
@@ -49,8 +48,6 @@ import org.odk.collect.android.utilities.FormEntryPromptUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import timber.log.Timber;
 
@@ -109,14 +106,10 @@ public class FormHierarchyActivity extends CollectAbstractActivity {
     protected Button jumpEndButton;
     protected RecyclerView recyclerView;
 
-    @Inject
-    Analytics analytics;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.hierarchy_layout);
-        Collect.getInstance().getComponent().inject(this);
 
         recyclerView = findViewById(R.id.list);
         recyclerView.setHasFixedSize(true);
@@ -132,7 +125,7 @@ public class FormHierarchyActivity extends CollectAbstractActivity {
         if (formController == null) {
             finish();
             Timber.w("FormController is null");
-            analytics.logEvent(NULL_FORM_CONTROLLER_EVENT, "FormHierarchyActivity", null);
+            Collect.getInstance().logRemoteAnalytics(NULL_FORM_CONTROLLER_EVENT, "FormHierarchyActivity", null);
             return;
         }
 

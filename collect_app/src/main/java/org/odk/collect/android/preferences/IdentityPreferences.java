@@ -20,18 +20,11 @@ import android.preference.CheckBoxPreference;
 
 import org.odk.collect.android.R;
 import org.odk.collect.android.application.Collect;
-import org.odk.collect.android.utilities.MultiClickGuard;
-import org.odk.collect.android.analytics.Analytics;
-
-import javax.inject.Inject;
 
 import static org.odk.collect.android.preferences.GeneralKeys.KEY_ANALYTICS;
 import static org.odk.collect.android.preferences.PreferencesActivity.INTENT_KEY_ADMIN_MODE;
 
 public class IdentityPreferences extends BasePreferenceFragment {
-
-    @Inject
-    Analytics analytics;
 
     public static IdentityPreferences newInstance(boolean adminMode) {
         Bundle bundle = new Bundle();
@@ -47,14 +40,10 @@ public class IdentityPreferences extends BasePreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.identity_preferences);
-        Collect.getInstance().getComponent().inject(this);
 
         findPreference("form_metadata").setOnPreferenceClickListener(preference -> {
-            if (MultiClickGuard.allowClick(getClass().getName())) {
-                startActivity(new Intent(getActivity(), FormMetadataPreferencesActivity.class));
-                return true;
-            }
-            return false;
+            startActivity(new Intent(getActivity(), FormMetadataPreferencesActivity.class));
+            return true;
         });
 
         initAnalyticsPref();
@@ -65,7 +54,7 @@ public class IdentityPreferences extends BasePreferenceFragment {
 
         if (analyticsPreference != null) {
             analyticsPreference.setOnPreferenceClickListener(preference -> {
-                analytics.setAnalyticsCollectionEnabled(analyticsPreference.isChecked());
+                Collect.getInstance().setAnalyticsCollectionEnabled(analyticsPreference.isChecked());
                 return true;
             });
         }
